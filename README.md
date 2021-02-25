@@ -4,12 +4,12 @@
 Machine Learning methods for high entropy oxides
 
 # Paper
-**Phase-property diagrams for multicomponent systems**
-Leonardo Velasco, Juan S. Castillo, Kante M. Veerraju, Jhon J. Olaya, Pascal Friederich, Horst Hahn
+**Phase-property diagrams for multicomponent systems**  
+Leonardo Velasco, Juan S. Castillo, Kante M. Veerraju, Jhon J. Olaya, Pascal Friederich, Horst Hahn  
 *Karlsruhe Institute of Technology*
 
 # Contact
-- High entropy alloys, experiments:leoveles@gmail.com
+- High entropy alloys, experiments:leoveles@gmail.com  
 - Machine learning: pascal.friederich@kit.edu
 
 # Requirements
