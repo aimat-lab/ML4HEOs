@@ -218,6 +218,7 @@ names = df.columns.values[1::]
 ratios = []
 properties_peak_0 = []  # first peak
 properties_peak_1 = []  # second peak
+properties_peak_2 = []  # third peak
 
 os.system("mkdir -p plots")
 
@@ -281,12 +282,14 @@ for i in range(0, xs.shape[1]):
 
     near_0 = sorted(zipped_sorted, key=lambda x: np.abs(x[0][1] - 31.26))
     near_1 = sorted(zipped_sorted, key=lambda x: np.abs(x[0][1] - 44.94))
+    near_2 = sorted(zipped_sorted, key=lambda x: np.abs(x[0][1] - 56.00))
 
     text = ""
     if (
         len(peaks) > 1
         and np.abs(near_0[0][0][1] - 31.26) < 2
         and np.abs(near_1[0][0][1] - 44.94) < 2
+        and np.abs(near_2[0][0][1] - 56.00) < 2
         and len(peaks) < 6
         and not names[i] == "HTA12"  # just noise
     ):
@@ -306,6 +309,13 @@ for i in range(0, xs.shape[1]):
         text += result_text
         properties_peak_1.append(result_properties)
 
+        text += "\n\nThird peak:\n"
+        result_text, result_properties = process_peak(
+            near_2[0][0], near_2[0][1], xs_current, ys_current, ys_baseline_removed,
+        )
+        text += result_text
+        properties_peak_2.append(result_properties)
+
         text += "\nRatio of the two first peaks:\n"
         ratio = near_0[0][0][0] / near_1[0][0][0]
         text += str(ratio) + "\n"
@@ -316,10 +326,11 @@ for i in range(0, xs.shape[1]):
         text = "Found less than two peaks."
         properties_peak_0.append(("None", "None", "None", "None", "None", "None"))
         properties_peak_1.append(("None", "None", "None", "None", "None", "None"))
+        properties_peak_2.append(("None", "None", "None", "None", "None", "None"))
         ratios.append("None")
 
     ax[1, 1].text(
-        0.5, 0.5, text, horizontalalignment="center", verticalalignment="center"
+        0.5, 0.4, text, horizontalalignment="center", verticalalignment="center"
     )
 
     plt.savefig("plots/" + names[i] + ".pdf", dpi=300)
@@ -331,6 +342,7 @@ with open("ratios.csv", "w") as csv_file:
     # transpose the lists:
     properties_peak_0 = list(map(list, zip(*properties_peak_0)))
     properties_peak_1 = list(map(list, zip(*properties_peak_1)))
+    properties_peak_2 = list(map(list, zip(*properties_peak_2)))
 
     header = [
         "Sample name",
@@ -347,6 +359,12 @@ with open("ratios.csv", "w") as csv_file:
         "Peak_1 FWHM",
         "Peak_1 height raw",
         "Peak_1 height after removal",
+        "Peak_2 area",
+        "Peak_2 mean",
+        "Peak_2 sigma",
+        "Peak_2 FWHM",
+        "Peak_2 height raw",
+        "Peak_2 height after removal",
     ]
 
     # print(names)
@@ -354,7 +372,9 @@ with open("ratios.csv", "w") as csv_file:
     # print(*properties_peak_0)
     # print(*properties_peak_1)
 
-    data = zip(names, ratios, *properties_peak_0, *properties_peak_1)
+    data = zip(
+        names, ratios, *properties_peak_0, *properties_peak_1, *properties_peak_2
+    )
 
     csv_writer.writerow(header)
     csv_writer.writerows(data)
